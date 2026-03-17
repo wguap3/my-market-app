@@ -3,7 +3,7 @@ package ru.yandex.practicum.mymarket.order.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ru.yandex.practicum.mymarket.item.dto.ItemDto;
+import ru.yandex.practicum.mymarket.orderItem.model.OrderItem;
 
 import java.util.List;
 
@@ -16,7 +16,6 @@ public class Order {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemDto> items;
+    private List<OrderItem> items;
     private long totalSum;
-
 }
