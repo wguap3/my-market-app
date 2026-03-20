@@ -15,6 +15,7 @@ public class Item {
     @Column(nullable = false)
     private String title;
     private String description;
+    @Column(name = "img_path")
     private String imgPath;
     @Column(nullable = false)
     private long price;
