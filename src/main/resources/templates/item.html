@@ -41,7 +41,8 @@
                             <span th:text="${item.count}"></span>
                             <button class="btn btn-outline-secondary" name="action" type="submit" value="PLUS">+
                             </button>
-                            <button class="btn btn-warning ms-auto bi bi-cart4" name="action" th:if="${item.count == 0}" type="submit"
+                            <button class="btn btn-warning ms-auto bi bi-cart4" name="action" th:if="${item.count == 0}"
+                                    type="submit"
                                     value="PLUS"></button>
                         </div>
                     </form>
