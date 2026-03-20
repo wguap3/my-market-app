@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
+    private Long id;
     private List<OrderItemDto> items;
     private long totalSum;
 }
