@@ -13,13 +13,11 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class CartServiceImpl implements CartService{
+public class CartServiceImpl implements CartService {
 
-    private final ItemRepository itemRepository;
     private static final String CART_KEY = "cart";
+    private final ItemRepository itemRepository;
 
-
-    @SuppressWarnings("unchecked")
     private Map<Long, Integer> getCart(HttpSession session) {
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute(CART_KEY);
         if (cart == null) {
@@ -32,37 +30,36 @@ public class CartServiceImpl implements CartService{
     @Override
     @Transactional
     public void addToCart(HttpSession session, Long itemId) {
-        Map<Long,Integer> cart = getCart(session);
-        cart.put(itemId,cart.getOrDefault(itemId,0)+1);
+        Map<Long, Integer> cart = getCart(session);
+        cart.put(itemId, cart.getOrDefault(itemId, 0) + 1);
     }
 
     @Override
     public void removeFromCart(HttpSession session, Long itemId) {
-        Map<Long,Integer> cart = getCart(session);
+        Map<Long, Integer> cart = getCart(session);
         cart.remove(itemId);
     }
 
     @Override
     public void changeCount(HttpSession session, Long itemId, String action) {
-        Map<Long,Integer> cart = getCart(session);
-        Integer count = cart.get(itemId);
-
-        if (count == null) {
-            return;
-        }
+        Map<Long, Integer> cart = getCart(session);
+        Integer currentCount = cart.get(itemId);
 
         if ("DELETE".equalsIgnoreCase(action)) {
             cart.remove(itemId);
         } else if ("PLUS".equalsIgnoreCase(action)) {
-            cart.put(itemId, count + 1);
+            int newCount = (currentCount != null ? currentCount : 0) + 1;
+            cart.put(itemId, newCount);
         } else if ("MINUS".equalsIgnoreCase(action)) {
-            if (count - 1 <= 0) {
+            if (currentCount == null || currentCount <= 0) {
                 cart.remove(itemId);
             } else {
-                cart.put(itemId, count - 1);
+                cart.put(itemId, currentCount - 1);
             }
         }
+
     }
+
 
     @Override
     public Map<Long, Integer> getCartItems(HttpSession session) {
@@ -71,18 +68,18 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public int getCountInCart(HttpSession session, Long itemId) {
-        return getCart(session).getOrDefault(itemId,0);
+        return getCart(session).getOrDefault(itemId, 0);
     }
 
     @Override
     public long calculateTotalSum(HttpSession session) {
-        Map<Long,Integer> cart = getCart(session);
+        Map<Long, Integer> cart = getCart(session);
         long total = 0;
 
-        for (Map.Entry<Long,Integer> entry: cart.entrySet()){
+        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             Item item = itemRepository.findById(entry.getKey()).orElse(null);
-            if(item != null){
-                total += item.getPrice()* entry.getValue();
+            if (item != null) {
+                total += item.getPrice() * entry.getValue();
             }
         }
         return total;
